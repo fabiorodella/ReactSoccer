@@ -12,3 +12,5 @@ To follow the API convention, some of the variables and methods are named in Por
 - `open ReactSoccer.xcodeproj`
 - Build and run
 
+Or run online in the [React Native Playground](https://rnplay.org/apps/RXoNBg).
+

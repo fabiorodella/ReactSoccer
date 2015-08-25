@@ -6,12 +6,11 @@ var {
   StyleSheet,
   Text,
   View,
-  PickerIOS,
   TouchableHighlight,
   ActivityIndicatorIOS,
 } = React;
 
-var PickerItemIOS = PickerIOS.Item;
+var Select = require('react-native-dropdown');
 
 var RodadaScreen = require('./rodada-screen.js');
 
@@ -133,23 +132,32 @@ var GruposScreen = React.createClass({
 
   renderFasePicker: function() {
 
+    var fases = this.state.fases;
+    var selectedFase = this.state.selectedFase;
     var fasePicker = null;
+
     if (this.state.fasesLoaded) {
+      var selectedIndex = 0;
+      var options = fases.map((fase, index) => {
+
+        if (selectedFase !== null && selectedFase == fase.nome) {
+          selectedIndex = index;
+        }
+
+        return {label: fase.nome};
+      });
+
       fasePicker = (
-        <PickerIOS selectedValue={this.state.selectedFase} onValueChange={(fase) => this.onFaseSelected(fase)} style={styles.picker}>
-          {this.state.fases.map((faseData) => (
-            <PickerItemIOS
-              key={faseData.nome}
-              value={faseData.nome}
-              label={faseData.nome}
-              />
-            )
-          )}
-        </PickerIOS>
+        <Select
+          options={options}
+          defaultOption={selectedIndex}
+          onSelect={(index) => this.onFaseSelected(options[index].label)}
+        />
       );
     } else {
       fasePicker = (
         <ActivityIndicatorIOS
+          style={styles.activityIndicator}
           animating={true}
           size='large'
         />
@@ -161,23 +169,32 @@ var GruposScreen = React.createClass({
 
   renderGrupoPicker: function() {
 
+    var grupos = this.state.grupos;
+    var selectedGrupo = this.state.selectedGrupo;
     var grupoPicker = null;
+
     if (this.state.fasesLoaded && this.state.gruposLoaded) {
+      var selectedIndex = 0;
+      var options = grupos.map((grupo, index) => {
+
+        if (selectedGrupo !== null && selectedGrupo == grupo) {
+          selectedIndex = index;
+        }
+
+        return {label: grupo};
+      });
+
       grupoPicker = (
-        <PickerIOS selectedValue={this.state.selectedGrupo} onValueChange={(grupo) => this.onGrupoSelected(grupo)} style={styles.picker}>
-          {this.state.grupos.map((grupo) => (
-            <PickerItemIOS
-              key={grupo}
-              value={grupo}
-              label={grupo}
-              />
-            )
-          )}
-        </PickerIOS>
+        <Select
+          options={options}
+          defaultOption={selectedIndex}
+          onSelect={(index) => this.onGrupoSelected(options[index])}
+        />
       );
     } else if (this.state.fasesLoaded) {
       grupoPicker = (
         <ActivityIndicatorIOS
+          style={styles.activityIndicator}
           animating={true}
           size='large'
         />
@@ -219,13 +236,14 @@ var styles = StyleSheet.create({
     paddingTop: 64,
   },
   pickerContainer: {
-    alignItems: 'center',
+    alignItems: 'stretch',
     justifyContent: 'center',
+    padding: 10,
+    paddingBottom: 100,
   },
-  picker: {
-    alignSelf: 'stretch',
-    borderWidth: 1,
-    borderColor: '#DDDDDD',
+  activityIndicator: {
+    alignSelf: 'center',
+    margin: 10,
   },
   header: {
     backgroundColor: '#2196F3',
